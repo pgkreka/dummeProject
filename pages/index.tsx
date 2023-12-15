@@ -7,6 +7,7 @@ import HeroPost from '../components/hero-post'
 import Intro from '../components/intro'
 import Layout from '../components/layout'
 import Table from '../components/table'
+import TableContent from '../TableContent/TableContent'
 import Create from '../components/create'
 import Update from '../components/update'
 import { getAllPosts } from '../lib/api'
@@ -36,7 +37,7 @@ export default function Index({ allPosts }: Props) {
               <Link to="/update">Update</Link>
             </li>
             <li>
-              <NextLink href="/settings">Settings (SSR)</NextLink>
+              <NextLink href="/settings">Settings</NextLink>
             </li>
           </ul>
 
@@ -53,7 +54,8 @@ export default function Index({ allPosts }: Props) {
         </Head>
         <Container>
           <Intro />
-          <Table />
+          {/* <Table /> */}
+          <TableContent />
           {heroPost && (
             <HeroPost
               title={heroPost.title}
