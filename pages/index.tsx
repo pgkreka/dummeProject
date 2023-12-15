@@ -6,9 +6,8 @@ import MoreStories from '../components/more-stories'
 import HeroPost from '../components/hero-post'
 import Intro from '../components/intro'
 import Layout from '../components/layout'
-import Table from '../components/table'
 import TableContent from '../TableContent/TableContent'
-import Create from '../components/create'
+import FileUpload from '../components/file-upload'
 import Update from '../components/update'
 import { getAllPosts } from '../lib/api'
 import Head from 'next/head'
@@ -31,7 +30,7 @@ export default function Index({ allPosts }: Props) {
               <Link to="/">Home</Link>
             </li>
             <li>
-              <Link to="/create">Create</Link>
+              <Link to="/file-upload">File Upload</Link>
             </li>
             <li>
               <Link to="/update">Update</Link>
@@ -42,7 +41,7 @@ export default function Index({ allPosts }: Props) {
           </ul>
 
           <Routes>
-            <Route path="/create" element={<Create/>} />
+            <Route path="/file-upload" element={<FileUpload/>} />
             <Route path="/update" element={<Update/>} />
             <Route path="/" element={<h1>Home</h1>} />
           </Routes>
@@ -54,7 +53,6 @@ export default function Index({ allPosts }: Props) {
         </Head>
         <Container>
           <Intro />
-          {/* <Table /> */}
           <TableContent />
           {heroPost && (
             <HeroPost

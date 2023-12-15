@@ -8,10 +8,6 @@ import TableBody from '@mui/material/TableBody';
 import ReactPaginate from "react-paginate";
 import { userAPI } from "../apis/UserAPI"
 import TableSortLabel from '@mui/material/TableSortLabel';
-// import { DataGrid } from '@mui/x-data-grid';
-// import { useDemoData } from '@mui/x-data-grid-generator';
-
-// const VISIBLE_FIELDS = ['name', 'surname', 'username', 'email'];
 
 const Users = (props) => {
   const {valueToOrderBy, orderDirection, handleRequestSort} = props
@@ -39,12 +35,6 @@ const Users = (props) => {
   const createSortHandler = (property) => (event) => {
     handleRequestSort(event, property)
   }
-
-  // const { data } = useDemoData({
-  //   dataSet: 'Employee',
-  //   visibleFields: VISIBLE_FIELDS,
-  //   rowLength: 100,
-  // });
 
   useEffect(() => {
     const getUsersPage = async () => {
@@ -121,9 +111,6 @@ const Users = (props) => {
       </header>
       <Container className="container">
         <Table className="table table-striped table-bordered">
-          {/* <div style={{ height: 400, width: '100%' }}>
-            <DataGrid {...data} />
-          </div> */}
             <TableHead className="row-header">
                 <TableRow>
                   <TableCell align="left" key="name">
