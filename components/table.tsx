@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import TableCell from '@mui/material/TableCell';
 import Container from '@mui/material/Container';
 import Table from '@mui/material/Table';
@@ -8,12 +7,15 @@ import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import ReactPaginate from "react-paginate";
 import { userAPI } from "../apis/UserAPI"
-import { DataGrid } from '@mui/x-data-grid';
-import { useDemoData } from '@mui/x-data-grid-generator';
+import TableSortLabel from '@mui/material/TableSortLabel';
+// import { DataGrid } from '@mui/x-data-grid';
+// import { useDemoData } from '@mui/x-data-grid-generator';
 
-const VISIBLE_FIELDS = ['name', 'surname', 'username', 'email'];
+// const VISIBLE_FIELDS = ['name', 'surname', 'username', 'email'];
 
-const Users = () => {   
+const Users = (props) => {
+  const {valueToOrderBy, orderDirection, handleRequestSort} = props
+  
   const [userList, setUserList] = useState([]);
 
   const [pageCount, setpageCount] = useState(0);
@@ -34,11 +36,15 @@ const Users = () => {
     return responseUserPageAPI
   });
 
-  const { data } = useDemoData({
-    dataSet: 'Employee',
-    visibleFields: VISIBLE_FIELDS,
-    rowLength: 100,
-  });
+  const createSortHandler = (property) => (event) => {
+    handleRequestSort(event, property)
+  }
+
+  // const { data } = useDemoData({
+  //   dataSet: 'Employee',
+  //   visibleFields: VISIBLE_FIELDS,
+  //   rowLength: 100,
+  // });
 
   useEffect(() => {
     const getUsersPage = async () => {
@@ -82,6 +88,32 @@ const Users = () => {
     setUserList(commentsFormServer);
   };
 
+  function descendingComparator(a, b, orderBy) {
+    if(b[orderBy] < a[orderBy]){
+      return -1
+    }
+    if(b[orderBy] > a[orderBy]){
+      return 1
+    }
+    return 0
+  }
+
+  function getComparator(order, orderBy) {
+    return order === "desc"
+          ? (a,b) => descendingComparator(a,b, orderBy)
+          : (a,b) => -descendingComparator(a,b, orderBy)
+  }
+
+  const sortedRowInformation = (userList, comparator) => {
+    const stabilizedRowArray = userList.map((el, index) => [el, index])
+    stabilizedRowArray.sort((a,b) => {
+      const order = comparator(a[0], b[0])
+      if(order !==0) return order
+      return a[1] - b[1]
+    })
+    return stabilizedRowArray.map((el) => el[0])
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -89,19 +121,47 @@ const Users = () => {
       </header>
       <Container className="container">
         <Table className="table table-striped table-bordered">
-          <div style={{ height: 400, width: '100%' }}>
+          {/* <div style={{ height: 400, width: '100%' }}>
             <DataGrid {...data} />
-          </div>
+          </div> */}
             <TableHead className="row-header">
                 <TableRow>
-                  <TableCell align="left">Name</TableCell>
-                  <TableCell align="left">Surname</TableCell>
-                  <TableCell align="left">Username</TableCell>
-                  <TableCell align="left">Email</TableCell>
+                  <TableCell align="left" key="name">
+                    <TableSortLabel active={valueToOrderBy === "name"}
+                                    direction={valueToOrderBy === "name" ? orderDirection: 'asc'}
+                                    onClick={createSortHandler("name")}
+                    >
+                      Name
+                    </TableSortLabel>  
+                  </TableCell>
+                  <TableCell align="left" key="surname">
+                    <TableSortLabel active={valueToOrderBy === "surname"}
+                                    direction={valueToOrderBy === "surname" ? orderDirection: 'asc'}
+                                    onClick={createSortHandler("surname")}
+                    >
+                      Surname
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell align="left" key="username">
+                    <TableSortLabel active={valueToOrderBy === "username"}
+                                    direction={valueToOrderBy === "username" ? orderDirection: 'asc'}
+                                    onClick={createSortHandler("username")}
+                    >
+                      Username
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell align="left" key="email">
+                    <TableSortLabel active={valueToOrderBy === "email"}
+                                    direction={valueToOrderBy === "email" ? orderDirection: 'asc'}
+                                    onClick={createSortHandler("email")}
+                    >
+                      Email
+                    </TableSortLabel>
+                  </TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
-              {userList.map((user: any) => (
+              {sortedRowInformation(userList, getComparator(orderDirection, valueToOrderBy)).map((user: any) => (
                 <>
                   <TableRow key={user.id} className="row-data">
                     <TableCell align="left" className="row-item">{user.name}</TableCell>
