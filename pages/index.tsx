@@ -23,37 +23,33 @@ export default function Index({ allPosts }: Props) {
   const morePosts = allPosts.slice(1)
   return (
     <>
-      <Router>
-        <div>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/file-upload">File Upload</Link>
-            </li>
-            <li>
-              <Link to="/update">Update</Link>
-            </li>
-            <li>
-              <NextLink href="/settings">Settings</NextLink>
-            </li>
-          </ul>
-
-          <Routes>
-            <Route path="/file-upload" element={<FileUpload/>} />
-            <Route path="/update" element={<Update/>} />
-            <Route path="/" element={<h1>Home</h1>} />
-          </Routes>
-        </div>
-      </Router>
       <Layout>
         <Head>
           <title>{`Next.js Blog Example with ${CMS_NAME}`}</title>
         </Head>
         <Container>
           <Intro />
+          <Router>
+            <div>
+              <ul>
+                <li>
+                  <Link to="/">Home</Link>
+                </li>
+                <li>
+                  <Link to="/update">Update</Link>
+                </li>
+                <li>
+                  <NextLink href="/settings">Settings</NextLink>
+                </li>
+              </ul>
+
+              <Routes>
+                <Route path="/update" element={<Update/>} />
+              </Routes>
+            </div>
+          </Router>
           <TableContent />
+          <FileUpload />
           {heroPost && (
             <HeroPost
               title={heroPost.title}
