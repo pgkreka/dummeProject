@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Container, List, ListItem, Typography } from '@mui/material';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 const isPDF = (file) => {
   return new Promise<void>((resolve, reject) => {
@@ -25,6 +26,13 @@ const isPDF = (file) => {
   });
 };
 
+const isValidFileName = (fileName) => {
+  // Regex pattern: Only lowercase letters, numbers, and underscores are allowed
+  const pattern = /^[a-z0-9_]+$/;
+
+  return pattern.test(fileName);
+};
+
 const FileUpload = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [error, setError] = useState(null);
@@ -37,6 +45,11 @@ const FileUpload = () => {
       // Validate each file for PDF format
       for (const file of newFiles) {
         await isPDF(file);
+        // Check file naming convention
+        const fileName = (file as File).name.split('.')[0];
+        if (!isValidFileName(fileName)) {
+          throw new Error('Invalid file name. File names should only contain lowercase letters, numbers, and underscores.');
+        }
       }
       setSelectedFiles((prevFiles) => [...prevFiles, ...newFiles]);
       setError(null);
@@ -101,6 +114,8 @@ const FileUpload = () => {
         variant="contained"
         color="primary"
         style={{ marginTop: '1rem', display: 'none'}}
+        component="span"
+        startIcon={<CloudUploadIcon />}
         onClick={handleUpload}
       >
         Submit
