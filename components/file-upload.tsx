@@ -46,7 +46,7 @@ const FileUpload = () => {
       for (const file of newFiles) {
         await isPDF(file);
         // Check file naming convention
-        const fileName = (file as File).name.split('.')[0];
+        const fileName = (file as File).name.split('.')[0]; // Assuming the file has an extension
         if (!isValidFileName(fileName)) {
           throw new Error('Invalid file name. File names should only contain lowercase letters, numbers, and underscores.');
         }
