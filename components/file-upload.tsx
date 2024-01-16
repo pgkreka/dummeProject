@@ -29,7 +29,6 @@ const isPDF = (file) => {
 const isValidFileName = (fileName) => {
   // Regex pattern: Only lowercase letters, numbers, and underscores are allowed
   const pattern = /^[a-z0-9_]+$/;
-
   return pattern.test(fileName);
 };
 
@@ -44,15 +43,22 @@ const FileUpload = () => {
 
       // Validate each file for PDF format
       for (const file of newFiles) {
-        await isPDF(file);
+        try {
+          await isPDF(file);
+          setError(null);
+        } catch (error) {
+          // If it's not a PDF, add it to the list with the name in red
+          (file as { invalid?: boolean }).invalid = true;
+          setError(error.message);
+        }
         // Check file naming convention
         const fileName = (file as File).name.split('.')[0]; // Assuming the file has an extension
         if (!isValidFileName(fileName)) {
-          throw new Error('Invalid file name. File names should only contain lowercase letters, numbers, and underscores.');
+          setError((prevError) => (prevError ? `${prevError}\n` : '') + `Invalid file name. File names should only contain lowercase letters, numbers, and underscores.`);
         }
       }
       setSelectedFiles((prevFiles) => [...prevFiles, ...newFiles]);
-      setError(null);
+      // setError(null);
     } catch (error) {
       setError(error.message);
     }
@@ -71,6 +77,7 @@ const FileUpload = () => {
     const newFiles = [...selectedFiles];
     newFiles.splice(index, 1);
     setSelectedFiles(newFiles);
+    setError(null);
   };
 
   return (
@@ -95,8 +102,10 @@ const FileUpload = () => {
         {selectedFiles.length > 0 && <strong>Selected Files:</strong>}
         <List>
           {selectedFiles.map((file, index) => (
-            <ListItem key={index}>
-              {file.name}
+            <ListItem key={index} style={{ color: file.type !== 'application/pdf' ? 'red' : 'inherit' }}>
+              <span style={{ color: isValidFileName(file.name.split('.')[0]) ? 'inherit' : 'red' }}>
+                {file.name}
+              </span>
               <Button
                 variant="outlined"
                 color="secondary"
