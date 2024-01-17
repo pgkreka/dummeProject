@@ -72,7 +72,24 @@ const FileUpload = () => {
   const handleUpload = () => {
     // Handle file upload
     if (selectedFiles.length > 0) {
-      console.log('Uploading files:', selectedFiles);
+      const formData = new FormData();
+  
+      // Append each file to the FormData object
+      selectedFiles.forEach((file, index) => {
+        formData.append(`file${index + 1}`, file);
+      });
+      fetch('https://example.com/upload', {
+        method: 'POST',
+        body: formData,
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Upload successful:', data);
+        })
+        .catch(error => {
+          console.error('Error uploading files:', error);
+          // Handle upload error
+        });
     } else {
       console.error('No files selected');
     }
