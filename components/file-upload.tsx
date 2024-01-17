@@ -35,6 +35,8 @@ const isValidFileName = (fileName) => {
 const FileUpload = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [error, setError] = useState(null);
+  const [displaySubmitButton, setDisplaySubmitButton] = useState(false);
+  let hasError = false;
 
   const handleFileChange = async (event) => {
     try {
@@ -50,15 +52,18 @@ const FileUpload = () => {
           // If it's not a PDF, add it to the list with the name in red
           (file as { invalid?: boolean }).invalid = true;
           setError(error.message);
+          hasError = true;
         }
         // Check file naming convention
-        const fileName = (file as File).name.split('.')[0]; // Assuming the file has an extension
+        const fileName = (file as File).name.split('.')[0];
         if (!isValidFileName(fileName)) {
           setError((prevError) => (prevError ? `${prevError}\n` : '') + `Invalid file name. File names should only contain lowercase letters, numbers, and underscores.`);
+          hasError = true;
         }
       }
       setSelectedFiles((prevFiles) => [...prevFiles, ...newFiles]);
       // setError(null);
+      setDisplaySubmitButton(!hasError);
     } catch (error) {
       setError(error.message);
     }
@@ -78,6 +83,10 @@ const FileUpload = () => {
     newFiles.splice(index, 1);
     setSelectedFiles(newFiles);
     setError(null);
+    setDisplaySubmitButton(!hasError);
+    if (newFiles.length === 0) {
+      setDisplaySubmitButton(hasError);
+    }
   };
 
   return (
@@ -122,7 +131,7 @@ const FileUpload = () => {
       <Button
         variant="contained"
         color="primary"
-        style={{ marginTop: '1rem', display: 'none'}}
+        style={{ marginTop: '1rem', display: displaySubmitButton ? '' : 'none'}}
         component="span"
         startIcon={<CloudUploadIcon />}
         onClick={handleUpload}
