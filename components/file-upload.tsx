@@ -32,6 +32,13 @@ const isValidFileName = (fileName) => {
   return pattern.test(fileName);
 };
 
+const isValidFileSize = (file) => {
+  const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
+  if (file.size > maxSizeInBytes) {
+    throw new Error(`File size exceeds the limit of 2MB. Please select a smaller file.`);
+  }
+};
+
 const FileUpload = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [error, setError] = useState(null);
@@ -47,6 +54,7 @@ const FileUpload = () => {
       for (const file of newFiles) {
         try {
           await isPDF(file);
+          isValidFileSize(file);
           setError(null);
         } catch (error) {
           // If it's not a PDF, add it to the list with the name in red
@@ -128,7 +136,7 @@ const FileUpload = () => {
         {selectedFiles.length > 0 && <strong>Selected Files:</strong>}
         <List>
           {selectedFiles.map((file, index) => (
-            <ListItem key={index} style={{ color: file.type !== 'application/pdf' ? 'red' : 'inherit' }}>
+            <ListItem key={index} style={{ color: file.invalid ? 'red' : (file.type !== 'application/pdf' ? 'red' : 'inherit') }}>
               <span style={{ color: isValidFileName(file.name.split('.')[0]) ? 'inherit' : 'red' }}>
                 {file.name}
               </span>
