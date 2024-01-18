@@ -39,6 +39,14 @@ const isValidFileSize = (file) => {
   }
 };
 
+const isFileNameWithinWindowsLimitation = (fileName) => {
+  // Windows file name length limitation
+  const minFileNameLength = 1; // Minimum length
+  const maxFileNameLength = 255; // Maximum length
+  const fileNameLength = fileName.length;
+  return fileNameLength >= minFileNameLength && fileNameLength <= maxFileNameLength;
+};
+
 const FileUpload = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [error, setError] = useState(null);
@@ -66,6 +74,9 @@ const FileUpload = () => {
         const fileName = (file as File).name.split('.')[0];
         if (!isValidFileName(fileName)) {
           setError((prevError) => (prevError ? `${prevError}\n` : '') + `Invalid file name. File names should only contain lowercase letters, numbers, and underscores.`);
+          hasError = true;
+        } else if (!isFileNameWithinWindowsLimitation(fileName)) {
+          setError((prevError) => (prevError ? `${prevError}\n` : '') + `File name length exceeds Windows limitation (between 128-255 characters).`);
           hasError = true;
         }
       }
