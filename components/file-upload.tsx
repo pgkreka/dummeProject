@@ -11,7 +11,7 @@ const isPDF = (file) => {
       const arr = new Uint8Array(reader.result as ArrayBuffer).subarray(0, 4);
       const header = Array.from(arr).map((byte) => byte.toString(16)).join('');
 
-      if (header === '25504446') {
+      if (header === '25504446' || header === 'efbbbf25') {
         // Resolve the promise if it's a PDF
         resolve();
       } else {
