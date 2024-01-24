@@ -95,11 +95,15 @@ const FileUpload = () => {
   
       // Append each file to the FormData object
       selectedFiles.forEach((file, index) => {
-        formData.append(`file${index + 1}`, new Blob([file], { type: file.type }), file.name);
+        formData.append(`file${index + 1}`, file);
       });
       fetch('https://example.com/upload', {
         method: 'POST',
-        body: formData
+        body: formData,
+        headers: selectedFiles.reduce((headers, file, index) => {
+          headers[`Content-Type${index + 1}`] = file.type;
+          return headers;
+        }, {}),
       })
         .then(response => response.json())
         .then(data => {
