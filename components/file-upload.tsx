@@ -99,10 +99,7 @@ const FileUpload = () => {
       });
       fetch('https://example.com/upload', {
         method: 'POST',
-        headers: {
-          'Content-Type':'application/json'
-        },
-        body: JSON.stringify(formData)
+        body: formData
       })
         .then(response => response.json())
         .then(data => {
