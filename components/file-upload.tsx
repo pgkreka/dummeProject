@@ -167,7 +167,7 @@ const FileUpload = () => {
       <Button
         variant="contained"
         color="primary"
-        style={{ marginTop: '1rem', display: displaySubmitButton ? '' : 'none'}}
+        style={{ marginTop: '1rem', marginBottom: '3rem', display: displaySubmitButton ? '' : 'none'}}
         component="span"
         startIcon={<CloudUploadIcon />}
         onClick={handleUpload}

@@ -2,14 +2,10 @@ import React from 'react';
 import {BrowserRouter as Router, Routes, Route, Link} from 'react-router-dom';
 import NextLink from 'next/link';
 import Container from '../components/container'
-import MoreStories from '../components/more-stories'
-import HeroPost from '../components/hero-post'
 import Intro from '../components/intro'
 import Layout from '../components/layout'
-import TableContent from '../TableContent/TableContent'
-import FileUpload from '../components/file-upload'
-import Update from '../components/update'
-import { getAllPosts } from '../lib/api'
+import Upload from '../components/upload'
+import UsersTable from '../components/usersTable'
 import Head from 'next/head'
 import { CMS_NAME } from '../lib/constants'
 import Post from '../interfaces/post'
@@ -19,13 +15,11 @@ type Props = {
 }
 
 export default function Index({ allPosts }: Props) {
-  const heroPost = allPosts[0]
-  const morePosts = allPosts.slice(1)
   return (
     <>
       <Layout>
         <Head>
-          <title>{`Next.js Blog Example with ${CMS_NAME}`}</title>
+          <title>{CMS_NAME}</title>
         </Head>
         <Container>
           <Intro />
@@ -36,7 +30,10 @@ export default function Index({ allPosts }: Props) {
                   <Link to="/">Home</Link>
                 </li>
                 <li>
-                  <Link to="/update">Update</Link>
+                  <Link to="/usersTable">Users Table</Link>
+                </li>
+                <li>
+                  <Link to="/upload">Upload File</Link>
                 </li>
                 <li>
                   <NextLink href="/settings">Settings</NextLink>
@@ -44,40 +41,15 @@ export default function Index({ allPosts }: Props) {
               </ul>
 
               <Routes>
-                <Route path="/update" element={<Update/>} />
+                <Route path="/usersTable" element={<UsersTable/>} />
+              </Routes>
+              <Routes>
+                <Route path="/upload" element={<Upload/>} />
               </Routes>
             </div>
           </Router>
-          <TableContent />
-          <FileUpload />
-          {heroPost && (
-            <HeroPost
-              title={heroPost.title}
-              coverImage={heroPost.coverImage}
-              date={heroPost.date}
-              author={heroPost.author}
-              slug={heroPost.slug}
-              excerpt={heroPost.excerpt}
-            />
-          )}
-          {morePosts.length > 0 && <MoreStories posts={morePosts} />}
         </Container>
       </Layout>
     </>
   )
-}
-
-export const getStaticProps = async () => {
-  const allPosts = getAllPosts([
-    'title',
-    'date',
-    'slug',
-    'author',
-    'coverImage',
-    'excerpt',
-  ])
-
-  return {
-    props: { allPosts },
-  }
 }
