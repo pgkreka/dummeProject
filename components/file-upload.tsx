@@ -100,6 +100,10 @@ const FileUpload = () => {
       fetch('https://example.com/upload', {
         method: 'POST',
         body: formData,
+        headers: selectedFiles.reduce((headers, file, index) => {
+          headers[`Content-Type${index + 1}`] = file.type;
+          return headers;
+        }, {}),
       })
         .then(response => response.json())
         .then(data => {
